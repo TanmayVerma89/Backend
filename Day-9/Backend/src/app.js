@@ -9,6 +9,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("./public"))
 
+
+
 app.post('/api/notes', async (req, res) => {
     const { title, description } = req.body;
     const note = await noteModel.create({
@@ -47,7 +49,7 @@ app.put('/api/notes/:id', async (req, res) => {
 })
 
 app.use('*name',(req,res) => {
-    res.sendFile(path.join(__dirname,"..", "./public/index.html"))
+    res.sendFile(path.dirname, '..', '/public/index.html')
 })
 
 module.exports = app

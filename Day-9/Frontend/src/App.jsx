@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/notes';
+const API_URL = 'https://backend-igco.onrender.com/api/notes';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
