@@ -1,0 +1,6 @@
+npm init -y 
+express
+mongoose
+dotenv
+cookie-parser
+jsonwebtoken
