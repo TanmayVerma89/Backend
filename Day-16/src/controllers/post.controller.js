@@ -13,10 +13,10 @@ async function createPostController(req, res) {
 
     const token = req.cookies.jwt_token;
 
-    let decodedToken
+    let decoded;
 
     try {
-        decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
         return res.status(401).json({
             message: "Unauthorized access"
@@ -35,7 +35,7 @@ async function createPostController(req, res) {
 
     const post = await postModel.create({
         caption: req.body.caption,
-        user: decodedToken.id,
+        user: decoded.id,
         imageUrl: file.url
     })
 
@@ -46,7 +46,18 @@ async function createPostController(req, res) {
 }
 
 async function getPostController(req,res) {
-    
+    const token = req.cookies.jwt_token;
+
+    let decoded;
+
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({
+            message: "Unauthorized access"
+        })
+    }
+    const userId = decoded.id;
     const posts = await postModel.find({
         user:userId
     })
@@ -59,7 +70,17 @@ async function getPostController(req,res) {
 }
 
 async function getPostDetailController(req,res) {
-    
+    const token = req.cookies.jwt_token;
+
+    let decoded;
+
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({
+            message: "Unauthorized access"
+        })
+    }
 
     const userId = decoded.id;
     const postId = req.params.postId;
