@@ -25,7 +25,7 @@ async function registerController(req, res) {
         })
     }
 
-    const hash = await bcrypt.hash(password,10);
+    const hash = await bcrypt.hash(password, 10);
 
     const user = await userModel.create({
         username, email, password: hash, bio, profile_image
@@ -71,10 +71,10 @@ async function loginController(req, res) {
         })
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password,user.password); 
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-        return res.status(401 ).json({
+        return res.status(401).json({
             message: "Invalid credentials"
         })
     }
@@ -83,7 +83,7 @@ async function loginController(req, res) {
 
     res.status(200).json({
         message: 'Logged in',
-        user:{
+        user: {
             username: user.username,
             email: user.email,
             bio: user.bio,
