@@ -1,0 +1,16 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, 
+body,
+#root {
+    width: 100%;
+    background-color: black;
+    color: whitesmoke;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    padding-inline: 0.1rem;
+    padding-block: 0.115rem;
+}
