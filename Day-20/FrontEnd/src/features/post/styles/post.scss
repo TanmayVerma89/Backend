@@ -1,0 +1,81 @@
+.post {
+    width: 350px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    background-color: rgb(31, 14, 80);
+
+    .user {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        justify-content: flex-start;
+        text-align: center;
+
+        span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        img {
+            aspect-ratio: 1/1;
+            width: 2rem;
+            border-radius: 50%;
+        }
+
+        .follow {
+            background-color: transparent;
+            color: whitesmoke;
+            outline: none;
+            border: 1px solid whitesmoke;
+            border-radius: 0.25rem;
+            padding: 0.15rem 0.75rem;
+            cursor: pointer;
+            text-align: center;
+        }
+    }
+
+    img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+
+    .bottom {
+        width: 100%;
+
+        .icons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+
+            .left {
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+
+                .liked {
+                    color: rgb(255, 0, 0);
+                }
+            }
+
+            svg {
+                aspect-ratio: 1/1;
+                width: 1.5rem;
+            }
+        }
+
+        .caption {
+            font-size: 0.8rem;
+            line-height: 1rem;
+            word-spacing: 0.1rem;
+        }
+    }
+}
