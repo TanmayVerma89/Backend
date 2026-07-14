@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body 
+{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(146, 144, 144);
+}
+
+main {
+    height: 100vh;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #686767;
+}
+
+button{
+    cursor: pointer;
+}
