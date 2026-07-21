@@ -34,12 +34,8 @@ async function uploadSong(req, res) {
 
 }
 
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
 async function getSong(req, res) {
-    const { mood } = req.query;
+    const mood = req.query.mood;
 
     const song = await songModel.findOne({
         mood: mood
@@ -47,7 +43,7 @@ async function getSong(req, res) {
 
     return res.status(200).json({
         message: `song fetched for ${mood} mood`,
-        song,
+        song
     });
 }
 

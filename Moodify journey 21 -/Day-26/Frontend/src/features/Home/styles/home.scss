@@ -1,0 +1,17 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: clamp(0.35rem, 3vw, 0.45rem) 1rem;
+    gap: clamp(1.5rem, 3vw, 1.5rem);
+    background:
+        radial-gradient(circle at 8% 10%, rgba(167, 117, 255, 0.2), transparent 28rem),
+        radial-gradient(circle at 92% 85%, rgba(241, 105, 179, 0.16), transparent 25rem),
+        #292433;
+}
+
+.home .player {
+    margin: 0;
+}

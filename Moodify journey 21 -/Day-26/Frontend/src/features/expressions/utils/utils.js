@@ -1,7 +1,7 @@
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 
-export const startCamera = async (faceLandmarkerRef, videoRef,setEmotion) => {
+export const startCamera = async (faceLandmarkerRef, videoRef, setEmotion) => {
     try {
         const vision =
             await FilesetResolver.forVisionTasks(
@@ -36,7 +36,7 @@ export const startCamera = async (faceLandmarkerRef, videoRef,setEmotion) => {
     }
 };
 
-export const detectExpression = (faceLandmarkerRef, videoRef, setEmotion) => {  
+export const detectExpression = (faceLandmarkerRef, videoRef, setEmotion) => {
     if (
         !faceLandmarkerRef.current ||
         !videoRef.current
@@ -64,64 +64,35 @@ export const detectExpression = (faceLandmarkerRef, videoRef, setEmotion) => {
         scores[item.categoryName] = item.score;
     });
 
+    let currentMood;
+
     // Happy
     if (
-        scores.mouthSmileLeft > 0.5 &&
+        scores.mouthSmileLeft > 0.45 &&
         scores.mouthSmileRight > 0.5
     ) {
-        setEmotion("😀 Happy");
+        currentMood = "happy";
     }
 
     // Surprise
     else if (
         scores.jawOpen > 0.3 &&
-        scores.browInnerUp > 0.35
+        scores.browInnerUp > 0.3
     ) {
-        setEmotion("😮 Surprised");
+        currentMood = "surprised";
     }
-
-    // Angry
-    else if (
-        scores.browDownLeft > 0.1 &&
-        scores.browDownRight > 0.1
-    ) {
-        setEmotion("😠 Angry");
-    }
-
     // Sad
     else if (
-        scores.browDownLeft > 0.25 &&
-        scores.browDownRight > 0.25
+        scores.browDownLeft > 0.1 &&
+        scores.browDownRight > 0.1 &&
+        scores.eyeBlinkLeft > 0.3 &&
+        scores.eyeBlinkRight > 0.3 
     ) {
-        setEmotion("😔 Sad");
+        currentMood = "sad";
+    } else {
+        currentMood = "neutral";
     }
 
-    // Fear
-    else if (
-        scores.eyeWideLeft > 0.5 &&
-        scores.eyeWideRight > 0.5 &&
-        scores.jawOpen > 0.4
-    ) {
-        setEmotion("😨 Fear");
-    }
-
-    // Left Wink
-    else if (
-        scores.eyeBlinkLeft > 0.8 &&
-        scores.eyeBlinkRight < 0.3
-    ) {
-        setEmotion("😉 Left Wink");
-    }
-
-    // Right Wink
-    else if (
-        scores.eyeBlinkRight > 0.8 &&
-        scores.eyeBlinkLeft < 0.3
-    ) {
-        setEmotion("😉 Right Wink");
-    }
-
-    else {
-        setEmotion("😐 Neutral");
-    }
+    setEmotion(currentMood);
+    return currentMood;
 };

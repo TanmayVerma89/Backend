@@ -1,0 +1,283 @@
+.player {
+    --player-bg: #16131f;
+    --player-surface: rgba(255, 255, 255, 0.07);
+    --player-text: #f9f8ff;
+    --player-muted: #a6a1b5;
+    --player-accent: #a775ff;
+    --player-accent-strong: #8a51f4;
+
+    width: min(100%, 680px);
+    margin: 1.25rem auto;
+    padding: 1.15rem 1.25rem 1rem;
+    color: var(--player-text);
+    background:
+        radial-gradient(circle at 7% 115%, rgba(170, 114, 255, 0.24), transparent 42%),
+        radial-gradient(circle at 94% -25%, rgba(255, 134, 192, 0.17), transparent 37%),
+        var(--player-bg);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 1.4rem;
+    box-shadow: 0 1.25rem 3.75rem rgba(14, 8, 28, 0.32);
+}
+
+.player__track {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-width: 0;
+}
+
+.player__artwork {
+    display: grid;
+    flex: 0 0 auto;
+    width: 4.25rem;
+    aspect-ratio: 1;
+    overflow: hidden;
+    place-items: center;
+    color: white;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #6b3dbb, #f276b8);
+    border-radius: 0.85rem;
+    box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.25);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.player__details {
+    flex: 1;
+    min-width: 0;
+
+    h2,
+    p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    h2 {
+        margin: 0.13rem 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+}
+
+.player__eyebrow,
+.player__mood {
+    color: var(--player-muted);
+    font-size: 0.75rem;
+}
+
+.player__eyebrow {
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.player__timeline {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 1.25rem 0 0.9rem;
+    color: var(--player-muted);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.player__range {
+    width: 100%;
+    height: 0.3rem;
+    appearance: none;
+    cursor: pointer;
+    background: linear-gradient(
+        90deg,
+        var(--player-accent) var(--range-progress),
+        rgba(255, 255, 255, 0.16) var(--range-progress)
+    );
+    border-radius: 99px;
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    &::-webkit-slider-thumb {
+        width: 0.8rem;
+        height: 0.8rem;
+        appearance: none;
+        background: white;
+        border: 2px solid var(--player-accent);
+        border-radius: 50%;
+        box-shadow: 0 0 0 0.2rem rgba(167, 117, 255, 0.2);
+    }
+
+    &::-moz-range-thumb {
+        width: 0.65rem;
+        height: 0.65rem;
+        appearance: none;
+        background: white;
+        border: 2px solid var(--player-accent);
+        border-radius: 50%;
+        box-shadow: 0 0 0 0.2rem rgba(167, 117, 255, 0.2);
+    }
+}
+
+.player__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.player button {
+    display: inline-grid;
+    place-items: center;
+    color: var(--player-text);
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+
+    &:hover:not(:disabled) {
+        color: white;
+        background: var(--player-surface);
+    }
+
+    &:active:not(:disabled) {
+        transform: scale(0.94);
+    }
+
+    &:focus-visible,
+    + input:focus-visible {
+        outline: 2px solid var(--player-accent);
+        outline-offset: 3px;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
+    }
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+    }
+}
+
+
+.player__skip-button {
+    position: relative;
+    width: 2.55rem;
+    height: 2.55rem;
+
+    span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 0.6rem;
+        font-weight: 800;
+        transform: translate(-50%, -35%);
+    }
+}
+
+.player__play-button {
+    width: 3.45rem;
+    height: 3.45rem;
+    color: #160c2a !important;
+    background: linear-gradient(135deg, #cfb5ff, #a775ff) !important;
+    box-shadow: 0 0.5rem 1.3rem rgba(157, 99, 249, 0.34);
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #decaff, #ba91ff) !important;
+        transform: translateY(-1px);
+    }
+
+    svg {
+        width: 1.4rem;
+        height: 1.4rem;
+        stroke-width: 2.3;
+    }
+}
+
+.player__volume {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+
+    .player__icon-button {
+        flex: 0 0 auto;
+    }
+}
+
+.player__volume-range {
+    width: 4.3rem;
+}
+
+.player__speed {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: 0.15rem;
+    color: var(--player-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.player__speed select {
+    padding: 0.38rem 0.4rem;
+    color: var(--player-text);
+    font: inherit;
+    background: var(--player-surface);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 0.45rem;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid var(--player-accent);
+        outline-offset: 2px;
+    }
+}
+
+// Native select menus render their option list separately from the control.
+// Keep options readable when the browser uses a light dropdown surface.
+.player__speed select option {
+    color: #221a2d;
+    background: #fff;
+}
+
+.player__error {
+    margin-top: 0.8rem;
+    color: #ffb0c9;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+@media (max-width: 460px) {
+    .player {
+        padding: 1rem;
+        border-radius: 1.1rem;
+    }
+
+    .player__volume-range,
+    .player__controls > .player__icon-button {
+        display: none;
+    }
+
+    .player__speed-label {
+        display: none;
+    }
+
+    .player__volume {
+        margin-left: 0;
+    }
+}
