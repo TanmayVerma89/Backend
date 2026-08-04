@@ -1,0 +1,20 @@
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Navigate } from 'react-router'
+
+const Protected = ({children}) => {
+    const {loading} = useSelector(state => state.auth)
+    const {user} = useSelector(state => state.auth)
+
+    if (loading) {
+        return <h1>Loading...</h1>
+    }
+
+    if (!user) {
+        <Navigate to='/login' replace/>
+    }
+
+  return children
+}
+
+export default Protected

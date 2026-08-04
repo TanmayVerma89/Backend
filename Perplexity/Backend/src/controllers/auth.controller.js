@@ -77,7 +77,7 @@ async function verifyEmail(req, res) {
         const html = `
                     <h1>Email verified successfully!</h1>
                     <p>Your email has been verified, You can now log in to your account.</p>
-                    <a href="http://localhost:${process.env.PORT}/api/auth/login">Go to login</a>
+                    <a href="http://localhost:5173/login">Go to login</a>
                     `
 
         res.send(html);
