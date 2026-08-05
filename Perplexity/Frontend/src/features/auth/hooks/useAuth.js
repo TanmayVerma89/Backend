@@ -36,7 +36,7 @@ const useAuth = () => {
             const data = await getMe();
             dispatch(setUser(data.user))
         } catch (error) {
-            dispatch(setUser(error.response?.data?.message || "No user found"))
+            dispatch(setError(error.response?.data?.message || "No user found"))
         } finally {
             dispatch(setLoading(false))
         }

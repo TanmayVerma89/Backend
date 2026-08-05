@@ -6,12 +6,14 @@ const Protected = ({children}) => {
     const {loading} = useSelector(state => state.auth)
     const {user} = useSelector(state => state.auth)
 
+    console.log(loading,user)
+
     if (loading) {
         return <h1>Loading...</h1>
     }
 
     if (!user) {
-        <Navigate to='/login' replace/>
+        return <Navigate to='/login' replace/>
     }
 
   return children

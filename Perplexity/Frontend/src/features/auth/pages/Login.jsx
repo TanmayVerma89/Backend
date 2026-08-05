@@ -17,8 +17,10 @@ const Login = () => {
     const loading = useSelector(state => state.auth.loading)
 
     if (!loading && user) {
+        console.log(!loading, user)
         return <Navigate to='/dashboard' />
     }
+
     const { handleLogin } = useAuth()
 
     const handleSubmit = async (event) => {
