@@ -17,7 +17,7 @@ const messageSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: {
-                values: ['user', 'ai'],
+                values: ['user', 'AI'],
                 message: 'Role must be either user or ai',
             },
         },
