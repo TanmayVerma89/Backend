@@ -1,3 +1,4 @@
+import { redis } from "../config/blacklist.redis.js";
 import userModel from "../models/user.model.js"
 import { sendEmail } from "../services/mail.service.js";
 import jwt from 'jsonwebtoken'
@@ -151,10 +152,31 @@ async function getMe(req,res) {
         user
     });
 }
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+async function logout(req,res) {
+    const token = req.cookies.token;
+
+    if (!token) return res.status(401).json({
+        message: `Token not found`,
+    });
+
+    res.clearCookie('token')
+    const blacklistToken = await redis.set(token, Date.now().toString(),'EX',60*60*24);
+
+    return res.status(200).json({
+        message: `logout successfully`,
+    });
+
+}
 
 const authController = {
     register,
     login,
+    logout,
     verifyEmail,
     getMe
 }

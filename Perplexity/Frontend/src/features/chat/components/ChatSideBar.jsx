@@ -36,10 +36,10 @@ const ChatSideBar = ({ sidebarOpen, setSidebarOpen, currentChatId, handleNewChat
                     )}
                 </div>
 
-                <div className="chat-sidebar__footer">
+                {/* <div className="chat-sidebar__footer">
                     <button className="chat-sidebar__utility" type="button"><Icon name="settings" /> Settings</button>
                     <button className="chat-sidebar__utility" type="button"><Icon name="help" /> Help &amp; support</button>
-                </div>
+                </div> */}
             </aside>
   )
 }

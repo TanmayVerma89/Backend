@@ -6,6 +6,7 @@ import Icon from '../components/Icon'
 import ChatSideBar from '../components/ChatSideBar'
 import '../styles/dashboard.css'
 import { useChat } from '../hooks/useChat'
+import ChatHeader from '../components/ChatHeader'
 
 const suggestions = [
     'Explain a concept simply',
@@ -48,7 +49,7 @@ const TypingMarkdown = ({ content, animate, onTypingStart }) => {
 }
 
 const Dashboard = () => {
-    const { intializeSocketConnection, handleGetChats, handleSendMessage, hangleGetMessages } = useChat()
+    const { intializeSocketConnection, handleGetChats, handleSendMessage, handleGetMessages } = useChat()
     const { chats } = useSelector((state) => state.chat)
     const { user } = useSelector((state) => state.auth)
     const { currentChatId } = useSelector((state) => state.chat)
@@ -68,7 +69,7 @@ const Dashboard = () => {
     const messages = useMemo(() => chats[currentChatId]?.messages || [], [chats, currentChatId])
     const activeChat = chats[currentChatId]
     const dispatch = useDispatch();
-    
+
     useEffect(() => {
         localStorage.setItem('perplexity-theme', theme)
     }, [theme])
@@ -90,7 +91,7 @@ const Dashboard = () => {
 
     const handleSelectChat = (chat) => {
         dispatch(setCurrentChatId(chat.id))
-        hangleGetMessages({ chatId: chat.id })
+        handleGetMessages({ chatId: chat.id })
         setSidebarOpen(false)
     }
 
@@ -113,8 +114,32 @@ const Dashboard = () => {
         }
     }
 
-    const displayName = user?.username || user?.name || 'You';
+    const displayName = user?.username || 'You';
     const initials = displayName.slice(0, 2).toUpperCase();
+
+    const textareaRef = useRef(null)
+    const [composerExpanded, setComposerExpanded] = useState(false)
+    const [canExpandComposer, setCanExpandComposer] = useState(false)
+
+    const resizeTextarea = (textarea) => {
+        if (!textarea) return
+
+        textarea.style.height = 'auto'
+
+        const maxHeight = 10 * parseFloat(getComputedStyle(textarea).fontSize)
+
+        textarea.style.height = `${Math.min(
+            textarea.scrollHeight,
+            maxHeight
+        )}px`
+
+        setCanExpandComposer(textarea.scrollHeight > maxHeight)
+    }
+    useEffect(() => {
+        if (!textareaRef.current || composerExpanded) return
+
+        resizeTextarea(textareaRef.current)
+    }, [prompt, composerExpanded])
 
     return (
         <main className={`chat-workspace chat-workspace--${theme}`}>
@@ -130,30 +155,13 @@ const Dashboard = () => {
             />
 
             <section className="chat-main" aria-label="AI chat">
-                <header className="chat-header">
-                    <div className="chat-header__start">
-                        <button className="chat-header__icon-button chat-header__menu" type="button" aria-label="Open chat history" onClick={() => setSidebarOpen(true)}>
-                            <Icon name="menu" />
-                        </button>
-                        <h1 className="chat-header__title">
-                            {activeChat?.title || 'New conversation'}
-                            <span className="chat-header__status">AI ready</span>
-                        </h1>
-                    </div>
-
-                    <div className="chat-header__end">
-                        <button className="chat-theme-toggle" type="button" role="switch" aria-checked={theme === 'dark'} aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`} onClick={() => setTheme((currentTheme) => currentTheme === 'light' ? 'dark' : 'light')}>
-                            <span className="chat-theme-toggle__thumb"><Icon name={theme === 'light' ? 'sun' : 'moon'} /></span>
-                        </button>
-                        <button className="chat-header__icon-button" type="button" aria-label="Start a new chat" onClick={handleNewChat}>
-                            <Icon name="plus" />
-                        </button>
-                        <button className="chat-user-menu" type="button" aria-label="Open account menu">
-                            <span className="chat-user-menu__avatar">{initials}</span>
-                            <span className="chat-user-menu__name">{displayName}</span>
-                        </button>
-                    </div>
-                </header>
+                <ChatHeader
+                    setSidebarOpen={setSidebarOpen}
+                    activeChat={activeChat}
+                    handleNewChat={handleNewChat}
+                    initials={initials}
+                    theme={theme} setTheme={setTheme}
+                    displayName={displayName} />
 
                 <div className="chat-scroll-area" ref={scrollAreaRef}>
                     <div className="chat-conversation">
@@ -169,64 +177,105 @@ const Dashboard = () => {
                                 </div>
                             </section>
                         ) : (
-                            <div className="chat-messages" aria-live="polite">
-                                {messages.map((message, index) => {
-                                    const assistant = isAssistant(message.role)
-                                    const shouldAnimate = assistant && index === messages.length - 1 && shouldAnimateNextAssistantMessage.current
-                                    return (
-                                        <article className={`chat-message ${assistant ? 'chat-message--assistant' : 'chat-message--user'}`} key={message._id || `${message.role}-${index}`}>
-                                            <div className="chat-message__avatar" aria-hidden="true">{assistant ? '✦' : initials}</div>
+                            <>
+                                <div className="chat-messages" aria-live="polite">
+                                    {messages.map((message, index) => {
+                                        const assistant = isAssistant(message.role)
+                                        const shouldAnimate = assistant && index === messages.length - 1 && shouldAnimateNextAssistantMessage.current
+                                        return (
+                                            <article className={`chat-message ${assistant ? 'chat-message--assistant' : 'chat-message--user'}`} key={message._id || `${message.role}-${index}`}>
+                                                <div className="chat-message__avatar" aria-hidden="true">{assistant ? '✦' : initials}</div>
+                                                <div className="chat-message__body">
+                                                    <div className="chat-message__meta">
+                                                        <span className="chat-message__author">{assistant ? 'Perplexity' : displayName}</span>
+                                                        <span className="chat-message__role">{assistant ? 'AI assistant' : 'You'}</span>
+                                                    </div>
+                                                    <div className="chat-message__content">
+                                                        {assistant ? <TypingMarkdown content={message.content} animate={shouldAnimate} onTypingStart={() => { shouldAnimateNextAssistantMessage.current = false }} /> : message.content}
+                                                    </div>
+                                                    {assistant && (
+                                                        <div className="chat-message__actions">
+                                                            <button className="chat-message__action" type="button" aria-label="Copy response"><Icon name="copy" /></button>
+                                                            <button className="chat-message__action" type="button" aria-label="Helpful response"><Icon name="thumbsUp" /></button>
+                                                            <button className="chat-message__action" type="button" aria-label="Unhelpful response"><Icon name="thumbsDown" /></button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </article>
+                                        )
+                                    })}
+                                    {pendingMessage && (
+                                        <article className="chat-message chat-message--user">
+                                            <div className="chat-message__avatar" aria-hidden="true">{initials}</div>
                                             <div className="chat-message__body">
                                                 <div className="chat-message__meta">
-                                                    <span className="chat-message__author">{assistant ? 'Perplexity' : displayName}</span>
-                                                    <span className="chat-message__role">{assistant ? 'AI assistant' : 'You'}</span>
+                                                    <span className="chat-message__author">{displayName}</span>
+                                                    <span className="chat-message__role">You</span>
                                                 </div>
-                                                <div className="chat-message__content">
-                                                    {assistant ? <TypingMarkdown content={message.content} animate={shouldAnimate} onTypingStart={() => { shouldAnimateNextAssistantMessage.current = false }} /> : message.content}
-                                                </div>
-                                                {assistant && (
-                                                    <div className="chat-message__actions">
-                                                        <button className="chat-message__action" type="button" aria-label="Copy response"><Icon name="copy" /></button>
-                                                        <button className="chat-message__action" type="button" aria-label="Helpful response"><Icon name="thumbsUp" /></button>
-                                                        <button className="chat-message__action" type="button" aria-label="Unhelpful response"><Icon name="thumbsDown" /></button>
-                                                    </div>
-                                                )}
+                                                <div className="chat-message__content">{pendingMessage}</div>
                                             </div>
                                         </article>
-                                    )
-                                })}
-                                {pendingMessage && (
-                                    <article className="chat-message chat-message--user">
-                                        <div className="chat-message__avatar" aria-hidden="true">{initials}</div>
-                                        <div className="chat-message__body">
-                                            <div className="chat-message__meta">
-                                                <span className="chat-message__author">{displayName}</span>
-                                                <span className="chat-message__role">You</span>
+                                    )}
+                                    {pendingMessage && (
+                                        <article className="chat-message chat-message--assistant" aria-label="Perplexity is writing a response">
+                                            <div className="chat-message__avatar" aria-hidden="true">✦</div>
+                                            <div className="chat-message__body">
+                                                <div className="chat-message__meta">
+                                                    <span className="chat-message__author">Perplexity</span>
+                                                    <span className="chat-message__role">AI assistant</span>
+                                                </div>
+                                                <div className="chat-message__content"><div className="chat-typing" aria-hidden="true"><span /><span /><span /></div></div>
                                             </div>
-                                            <div className="chat-message__content">{pendingMessage}</div>
-                                        </div>
-                                    </article>
-                                )}
-                                {pendingMessage && (
-                                    <article className="chat-message chat-message--assistant" aria-label="Perplexity is writing a response">
-                                        <div className="chat-message__avatar" aria-hidden="true">✦</div>
-                                        <div className="chat-message__body">
-                                            <div className="chat-message__meta">
-                                                <span className="chat-message__author">Perplexity</span>
-                                                <span className="chat-message__role">AI assistant</span>
-                                            </div>
-                                            <div className="chat-message__content"><div className="chat-typing" aria-hidden="true"><span /><span /><span /></div></div>
-                                        </div>
-                                    </article>
-                                )}
-                            </div>
+                                        </article>
+                                    )}
+                                </div>
+                                <p className="chat-disclaimer">Perplexity can make mistakes. Please verify important information.</p>
+                            </>
                         )}
                     </div>
                 </div>
 
                 <div className="chat-composer-area">
-                    <form className="chat-composer" onSubmit={handleSend}>
-                        <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} onKeyDown={handlePromptKeyDown} placeholder="Message Perplexity…" aria-label="Message Perplexity" rows="1" disabled={Boolean(pendingMessage)} />
+                    <form
+                        className={`chat-composer ${composerExpanded ? 'chat-composer--expanded' : ''}`}
+                        onSubmit={handleSend}>
+
+                        {canExpandComposer && !composerExpanded && (
+                            <button
+                                className="chat-composer__expand"
+                                type="button"
+                                aria-label="Expand message editor"
+                                onClick={() => setComposerExpanded(true)}
+                            >
+                                ⤢
+                            </button>
+                        )}
+
+                        {composerExpanded && (
+                            <button
+                                className="chat-composer__expand"
+                                type="button"
+                                aria-label="Collapse message editor"
+                                onClick={() => setComposerExpanded(false)}
+                            >
+                                ⤡
+                            </button>
+                        )}
+
+                        <textarea
+                            id='textarea'
+                            name="User's-chat-message"
+                            ref={textareaRef}
+                            value={prompt}
+                            onChange={(event) => {
+                                setPrompt(event.target.value)
+                                resizeTextarea(event.target)
+                            }}
+                            onKeyDown={handlePromptKeyDown}
+                            placeholder="Message Perplexity…"
+                            aria-label="Message Perplexity"
+                            rows="1" disabled={Boolean(pendingMessage)} />
+
                         <div className="chat-composer__footer">
                             <div className="chat-composer__tools">
                                 <button className="chat-composer__icon-button" type="button" aria-label="Attach a file"><Icon name="attachment" /></button>
@@ -235,7 +284,6 @@ const Dashboard = () => {
                             <button className="chat-composer__send" type="submit" disabled={!prompt.trim() || Boolean(pendingMessage)} aria-label="Send message"><Icon name="send" /></button>
                         </div>
                     </form>
-                    <p className="chat-disclaimer">Perplexity can make mistakes. Please verify important information.</p>
                 </div>
             </section>
         </main>

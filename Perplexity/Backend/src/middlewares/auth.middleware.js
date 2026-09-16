@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { redis } from '../config/blacklist.redis.js'
 
 export async function identifyUser(req, res, next) {
     try {
@@ -6,6 +7,12 @@ export async function identifyUser(req, res, next) {
 
         if (!token) {
             return res.status(401).json({ message: 'Authentication token missing' })
+        }
+        const blacklistedToken = await redis.get(token);
+        if (blacklistedToken) {
+            return res.status(409).json({
+                message: `Invalid or revoked token`,
+            });
         }
 
         // jwt.verify throws on invalid/expired tokens

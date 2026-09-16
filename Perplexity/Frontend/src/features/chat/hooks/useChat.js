@@ -47,7 +47,7 @@ export const useChat = () => {
         dispatch(setIsLoading(false))
     }, [dispatch])
 
-    const hangleGetMessages = useCallback(async ({ chatId }) => {
+    const handleGetMessages = useCallback(async ({ chatId }) => {
         dispatch(setIsLoading(true));
         const data = await getMessages({ chatId })
         const {messages} = data;
@@ -59,6 +59,6 @@ export const useChat = () => {
         intializeSocketConnection,
         handleGetChats,
         handleSendMessage,
-        hangleGetMessages
+        handleGetMessages
     }
 }

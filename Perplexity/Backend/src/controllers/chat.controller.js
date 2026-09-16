@@ -36,8 +36,18 @@ async function sendMessage(req, res) {
         .find({ chat: chatId })
         .sort({ createdAt: 1 });
 
-    const response = await generateResponse(messages)
+    const start = Date.now();
 
+    console.log("1. Starting AI");
+
+    const response = await generateResponse(messages);
+
+    console.log(
+        "2. AI finished:",
+        Date.now() - start,
+        "ms"
+    );
+    
     const aiMessage = await messageModel.create({
         chat: chatId,
         content: response,
@@ -68,7 +78,7 @@ async function getMessages(req, res) {
         _id: chatId,
         user: req.userId
     });
-    
+
     if (chat.user != req.userId) {
         return res.status(404).json({
             message: `Chat not found`,
@@ -85,7 +95,7 @@ async function getMessages(req, res) {
 async function deleteChat(req, res) {
     const { chatId } = req.params;
     const chat = await chatModel.findOneAndDelete({
-        _id:chatId,
+        _id: chatId,
         user: req.userId
     });
 
@@ -95,10 +105,10 @@ async function deleteChat(req, res) {
         });
     }
 
-    await messageModel.deleteMany({chat:chatId});
+    await messageModel.deleteMany({ chat: chatId });
 
     res.status(200).json({
-        message: `Chat deleted successfully`, 
+        message: `Chat deleted successfully`,
     });
 }
 

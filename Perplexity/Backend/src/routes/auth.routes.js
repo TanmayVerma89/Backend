@@ -7,6 +7,7 @@ const authRouter = Router();
 
 authRouter.post('/register', registerValidator, authController.register);
 authRouter.post('/login',loginValidator , authController.login)
+authRouter.post('/logout',authController.logout)
 authRouter.get('/verify-email', authController.verifyEmail)
 authRouter.get('/get-me',identifyUser, authController.getMe)
 

@@ -10,7 +10,6 @@ const useAuth = () => {
             dispatch(setLoading(true))
 
             const data = await login(email, password)
-            console.log("logged in")
             dispatch(setUser(data.user))
         } catch (error) {
             dispatch(setError(error.response?.data?.message || "Login Failed"))

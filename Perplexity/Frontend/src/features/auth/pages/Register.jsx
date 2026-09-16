@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useAsyncValue, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import '../styles/authPage.scss'
 import useAuth from '../hooks/useAuth'
 
@@ -28,11 +28,18 @@ const Register = () => {
     }
 
     setError('')
-    setIsSubmitting(true)
+    try {
+      setIsSubmitting(true)
 
-    await handleRegister(username, email, password)
+      await handleRegister(username, email, password)
 
-    setIsSubmitting(false)
+      setIsSubmitting(false)
+      navigate('/verifyEmail')
+
+    } catch (err) {
+      setError("Error is registering")
+      console.log(err)
+    }
 
   }
 
