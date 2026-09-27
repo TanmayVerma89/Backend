@@ -5,9 +5,9 @@ const api = axios.create({
   withCredentials: true,
 });
 
-export async function sendProblem({ message }) {
+export async function sendProblem(message) {
   const res = await api.post("/api/battle", {
-    message,
+    problem : message,
   });
   console.log(res);
   return res.data.result;

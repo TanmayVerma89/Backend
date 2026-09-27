@@ -5,8 +5,9 @@ import ResponseCard from "./components/ResponseCard";
 import JudgePanel from "./components/JudgePanel";
 import InputBar from "./components/InputBar";
 import LoadingState from "./components/LoadingState";
+// import axios from 'axios'
 import { MOCK } from "./lib/constants";
-import { sendProblem } from "./service/api.service";
+// import { sendProblem } from "./service/api.service";
 
 export default function Arena() {
   const [status, setStatus] = useState("idle"); // 'idle' | 'loading' | 'done'
@@ -19,18 +20,14 @@ export default function Arena() {
     setResult(null);
 
     try {
-      
-      // const response = await axios.post("http://localhost:5000/api/battle",{
-      //   message: problem
-      // })
+
       // ── Replace with your actual backend endpoint ────────────────────────
-      // const response = await fetch('http://localhost:5000/api/battle', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ problem: text }),
-      // });
-      // const data = await response.json();
-      // setResult(data.result);
+
+      // const response = await axios.post('http://localhost:3000/api/battle', {
+      //   problem : text
+      // })
+
+      // setResult(response.data.result);
       // ───────────────────────────────────────────────────────────────────────
 
       // Simulating API delay
@@ -157,7 +154,7 @@ export default function Arena() {
               }}
             >
               <ResponseCard
-                label="Solution 1 — Bedrock Protocol Architecture"
+                label="Solution 1"
                 accent="#00f0ff"
                 score={result.judgement.solution1_score}
                 content={result.solution1}
@@ -168,7 +165,7 @@ export default function Arena() {
               />
 
               <ResponseCard
-                label="Solution 2 — Minecraft Coder Pack (Forge)"
+                label="Solution 2"
                 accent="#b026ff"
                 score={result.judgement.solution2_score}
                 content={result.solution2}

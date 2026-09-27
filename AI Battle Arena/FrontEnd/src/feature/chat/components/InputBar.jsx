@@ -107,7 +107,7 @@ export default function InputBar({ onSubmit, isLoading }) {
               padding: '10px 20px',
               borderRadius: 10,
               background: !text.trim() || isLoading ? 'rgba(255,255,255,0.05)' : 'var(--color-primary)',
-              color: !text.trim() || isLoading ? 'var(--text-muted)' : '#000',
+              color: 'var(--text-muted)',
               fontWeight: 700,
               fontSize: 14,
               fontFamily: 'var(--font-sans)',

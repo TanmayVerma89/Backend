@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -26,7 +28,33 @@ export const MOCK = {
 export function MD({ children }) {
   return (
     <div className="md">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{children}</ReactMarkdown>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ children: codeChildren, className, ...props }) {
+            const language = /language-([\w-]+)/.exec(className || '')?.[1];
+
+            if (!language) {
+              return <code className={className} {...props}>{codeChildren}</code>;
+            }
+
+            const code = String(codeChildren).replace(/\n$/, '');
+            const highlighted = hljs.getLanguage(language)
+              ? hljs.highlight(code, { language }).value
+              : hljs.highlightAuto(code).value;
+
+            return (
+              <code
+                className={`hljs ${className}`}
+                dangerouslySetInnerHTML={{ __html: highlighted }}
+                {...props}
+              />
+            );
+          },
+        }}
+      >
+        {children}
+      </ReactMarkdown>
     </div>
   );
 }

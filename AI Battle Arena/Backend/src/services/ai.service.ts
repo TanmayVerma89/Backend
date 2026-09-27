@@ -15,7 +15,7 @@ export const cohereModel = new ChatCohere({
     apiKey: config.COHERE_API_KEY,
 });
 
-const geminiModel = new ChatGoogle({
+export const geminiModel = new ChatGoogle({
     model: "gemini-flash-latest",
     apiKey: config.GEMINI_API_KEY,
 });
