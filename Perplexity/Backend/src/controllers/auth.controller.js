@@ -152,11 +152,7 @@ async function getMe(req,res) {
         user
     });
 }
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
+
 async function logout(req,res) {
     const token = req.cookies.token;
 
