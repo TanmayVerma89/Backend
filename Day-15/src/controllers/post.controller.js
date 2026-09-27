@@ -7,7 +7,7 @@ const imagekit = new ImageKit({
 })
 
 async function createPostController(req, res) {
-    console.log(req.body, req.file);
+    // console.log(req.body.caption, req.file);
 
     if (!req.file) {
         console.log("FILE NOT RECEIVED");
@@ -18,6 +18,8 @@ async function createPostController(req, res) {
         file: await toFile(req.file.buffer, 'file'),
         fileName: 'file',
     });
+
+    console.log(file.url)
 
     res.status(201).json({
         message: 'Post created',
